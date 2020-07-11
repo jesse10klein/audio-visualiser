@@ -9,6 +9,12 @@ body {
   z-index: 100;
 }
 
+button {
+  position: absolute;
+  right: 50px;
+  top: 50px;
+}
+
 #canvas {
   position: fixed;
   left: 0;
