@@ -7,15 +7,16 @@ head
   link(rel="shortcut icon" href="")
 
 #header
+  input(type='file' id='file' accept='audio/*')
   h3#searchTitle= "Search songs: "
   input#search-term(type='text' name='searchTerm' autocomplete="off")
   #search-dropdown
   button(onclick='startPlaying()')= 'Play'
 
   p.label= 'Bar Length'
-  input#barLengthSlider(type="range" min="10" max="45" value="22")
+  input#barLengthSlider(type="range" min="10" max="45" value="35")
   p.label= 'Radius'
-  input#circleRadiusSlider(type="range" min="10" max="60" value="30")
+  input#circleRadiusSlider(type="range" min="10" max="60" value="45")
 
 
 
