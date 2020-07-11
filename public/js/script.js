@@ -1,19 +1,19 @@
 
-let file = null;
 let audio = null;
+let timeoutSet = false;
+const barLengthSlider = document.getElementById('barLengthSlider');
+const circleRadiusSlider = document.getElementById('circleRadiusSlider');
 
 window.onload = function() {
-  file = document.getElementById("thefile");
-  audio = document.getElementById("audio");
-  audio.crossOrigin = "anonymous";
+  audio = document.getElementById('audio');
+  audio.crossOrigin = 'anonymous';
+  audio.volume = 0.1;
+  const canvas = document.getElementById('canvas');
 };
 
 
-function startPlaying() {
-  var files = file.files;
-  if (file.files.length > 0) {
-    audio.src = URL.createObjectURL(files[0]);
-  }
+function startPlaying(source) {
+  audio.src = source;
   audio.load();
   audio.play();
   var context = new AudioContext();
@@ -21,7 +21,6 @@ function startPlaying() {
   var analyser = context.createAnalyser();
 
   var canvas = document.getElementById("canvas");
-  const innerRadius = 100;
   canvas.width = window.innerWidth;
   canvas.height = window.innerHeight - 70;
   canvasCentre = {x: canvas.width/2, y: canvas.height/2};
@@ -57,6 +56,9 @@ function startPlaying() {
   function renderFrame() {
     requestAnimationFrame(renderFrame);
 
+    
+    const innerRadius = circleRadiusSlider.value * 2;
+
     x = 0;
 
     analyser.getByteFrequencyData(dataArray);
@@ -71,7 +73,7 @@ function startPlaying() {
 
     total = 0;
     for (var i = 0; i < bufferLength; i++) {
-      barHeight = dataArray[i] * 1.5;
+      barHeight = dataArray[i] * 0.03 * barLengthSlider.value;
       total += dataArray[i];
 
       var r = barHeight + ((1.2 * i/bufferLength));
@@ -114,7 +116,6 @@ function startPlaying() {
   renderFrame();
 };
 
-
 function drawRotatedRectangle(ctx, angle, magnitude, colour, innerRadius) {
   ctx.beginPath();
   ctx.lineWidth = 4;
@@ -155,6 +156,73 @@ function drawCircles(ctx, circles, canvasCentre) {
   }
   
 }
+
+function formatAutocompleteTag(tag) {
+  const HTML = `
+    <div class='search-tag'>
+      <p class='name'>${tag.name} by ${tag.artist} </p>
+      <p class='previewURL'>${tag.previewURL}</p>
+      <img class='search-image' src="${tag.imageURL}"> </img>
+      <button onclick='processPreview(this)'>Preview!</button>
+    </div>
+  `
+  return HTML;
+}
+
+function processPreview(elem) {
+  const url = (elem.previousElementSibling.previousElementSibling.innerText);
+  //Hide all boxed;
+  const dropdown = $("#search-dropdown");
+  dropdown.empty();
+  startPlaying(url);
+}
+
+function updateAutoComplete(matches) {
+
+  const dropdown = $("#search-dropdown");
+  dropdown.empty();
+
+  let HTMLString = "";
+  for (let i = 0; i < matches.length; i++) {
+    HTMLString += formatAutocompleteTag(matches[i]);
+  }
+
+  dropdown.append(HTMLString);
+  dropdown.css("display", "flex");
+  dropdown.css("flex-direction", "column");
+
+  if (!timeoutSet) {
+    timeoutSet = true;
+    setTimeout(function () {
+      const dd = $("#search-dropdown");
+      dd.css("display", "none");
+      timeoutSet = false;
+    }, 10000);
+  }
+}
+
+$("#search-term").on('keyup', function () {
+
+
+  const searchTerm = $("#search-term").val();
+  const data = { searchTerm }
+
+  const url = window.location.href + "spotify-api";
+
+  if (searchTerm.length < 4) {
+    updateAutoComplete([]);
+    return;
+  } 
+
+  $.ajax({
+    url, type: "POST", data,
+    success: function(response) {
+      console.log(response);
+      updateAutoComplete(response);
+    }
+  })
+
+});
 
 
 

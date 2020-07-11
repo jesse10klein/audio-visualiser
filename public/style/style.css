@@ -1,29 +1,30 @@
 body {
+  margin: 0;
+  padding: 0;
   background-color: black;
+  height: 100%;
+  width: 100%;
 }
 
-#thefile {
-  position: fixed;
-  top: 10px;
-  left: 10px;
-  z-index: 100;
-}
-
-button {
-  position: absolute;
-  right: 50px;
-  top: 50px;
+#header {
+  height: 10vh;
+  width: 100%;
+  background-color: white;
+  display: flex;
+  flex-direction: row;
 }
 
 #canvas {
-  position: fixed;
-  left: 0;
-  top: 0;
+  height: 89vh;
+  width: 100%;
 }
 
-audio {
+#audio {
+  display: none;
+}
+
+#search-dropdown {
+  margin-top: 80px;
   position: fixed;
-  left: 10px;
-  bottom: 10px;
-  width: calc(100% - 20px);
+  background-color: white;
 }

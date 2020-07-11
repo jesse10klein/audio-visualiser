@@ -3,10 +3,24 @@ head
   meta(charset='UTF-8')
   title Audio Visualiser
   link(rel='stylesheet' href='/style/style.css')
+  link(rel='stylesheet' href='/style/searchTerm.css')
   link(rel="shortcut icon" href="")
-button(onclick='startPlaying()') Play
-#content
-  input#thefile(type='file' accept='audio/*')
-  canvas#canvas
-  audio#audio(controls='')
+
+#header
+  h3#searchTitle= "Search songs: "
+  input#search-term(type='text' name='searchTerm' autocomplete="off")
+  #search-dropdown
+  button(onclick='startPlaying()')= 'Play'
+
+  p.label= 'Bar Length'
+  input#barLengthSlider(type="range" min="10" max="45" value="22")
+  p.label= 'Radius'
+  input#circleRadiusSlider(type="range" min="10" max="60" value="30")
+
+
+
+canvas#canvas
+audio#audio(controls='')
+
+script(src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js")
 script(src='/js/script.js')

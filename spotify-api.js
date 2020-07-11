@@ -1,11 +1,29 @@
 
 const prompt = require('prompt-sync')();
-const request = require('request');
+const request = require('request-promise');
+const { Router } = require('express');
 
 const client_id = 'ef9a4d764c5448c0ac37f6be0a35d722'; 
 const client_secret = '7c5ebdca944d4092be79580ea0a9b2b5';
 let access_token = null;
 const requestURL = "https://api.spotify.com/v1/search"
+
+const express = require('express');
+const router = express.Router();
+
+const bodyParser = require('body-parser');
+router.use(bodyParser.urlencoded({extended: true}));
+
+//Async wrapper for await requests
+function asyncHandler(cb) {
+  return async(req, res, next) => {
+    try {
+      await cb(req, res, next);
+    } catch(error) {
+      res.status(500).send(error.message);
+    }
+  }
+}
 
 // your application requests authorization
 const authOptions = {
@@ -19,80 +37,61 @@ const authOptions = {
   json: true
 };
 
+//Run at the start to authorize with spotify
+request.post(authOptions, async function(error, response, body) {
+  if (!error && response.statusCode === 200) {
+    //Save access token
+    access_token = body.access_token;
+  } else {
+    console.log("FATAL: Could not authorize with Spotify API");
+  }
+});
 
+console.log('linked');
 
-function sendSearchRequest(type, searchTerm) {
-  var options = {
-    url: `${requestURL}?q=${searchTerm}&type=${type}`,
+//Function to get top 10 best matches to a search term from user
+router.post('/', asyncHandler(async (req, res) => {
+
+  console.log("HERE");
+
+  const { searchTerm } = req.body;
+  const type = "track";
+
+  const options = {
+    url: `${requestURL}?q=${searchTerm}&type=${type}&limit=10`,
     headers: {
       'Authorization': 'Bearer ' + access_token
     },
     json: true
   };
-  //console.log(`Sending search request: ${JSON.stringify(options)}`);
 
-  request.get(options, function(error, response, body) {
-    printQueryData(body, type);
-  });
-}
+  await request.get(options, function(error, response, body) {
 
-function printQueryData(responseContent, type) {
+    const { items } = body.tracks;
 
-  if (type == 'track') {
-    let items = responseContent.tracks.items;
+    const dataToSend = [];
+
     for (let i = 0; i < items.length; i++) {
+
+      //Check if it has a preview URL, otherwise get rid of it
       if (items[i].preview_url == null) {
-        console.log(`${i+1}: ${items[i].name} by ${items[i].album.artists[0].name}`);
-      } else {
-        console.log(`${i+1}: ${items[i].name} by ${items[i].album.artists[0].name}. Listen here: ${items[i].preview_url}`);
+        continue;
       }
-      
+
+      const data = {
+        name: items[i].name,
+        artist: items[i].album.artists[0].name,
+        previewURL: items[i].preview_url,
+        imageURL: items[i].album.images[0].url
+      };
+      dataToSend.push(data);
     }
-  } 
-  
-  else if (type == 'album') {
-    let items = responseContent.albums.items;
-    for (let i = 0; i < items.length; i++) {
-      console.log(`${i+1}: ${items[i].name} by ${items[i].artists[0].name}`);
-    }
-  } 
-  
-  else if (type == 'artist') {
-    let items = responseContent.artists.items;
-    for (let i = 0; i < items.length; i++) {
-      console.log(`${i+1}: ${items[i].name}`);
-    }
-  }
-}
+    res.send(dataToSend);
+    console.log(dataToSend);
+  });
+
+}));
 
 
 
-
-request.post(authOptions, function(error, response, body) {
-  if (!error && response.statusCode === 200) {
-    //Save access token
-    access_token = body.access_token;
-    //Authorized
-    while (true) {
-      const response = prompt("Search by? (t)racks a(l)bums (a)rtists: ");
-      let type = null;
-      let searchTerm = null;
-      if (response == 't') {
-        type = 'track';
-        console.log("Searching by tracks");
-        searchTerm = prompt("Please enter the track you'd like to search for: ");
-      } if (response == 'l') {
-        type = 'album';
-        console.log("Searching by albums");
-        searchTerm = prompt("Please enter the album you'd like to search for: ");
-      } if (response == 'a') {
-        type = 'artist';
-        console.log("Searching by artists");
-        searchTerm = prompt("Please enter the artist you'd like to search for: ");
-      }
-      console.log(type, searchTerm);
-      sendSearchRequest(type, searchTerm);
-      break;
-    }
-  } //Send single request, might get error but doesn't matter
-});
+module.exports = router;

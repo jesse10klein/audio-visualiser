@@ -1,0 +1,20 @@
+
+
+.search-tag {
+  display: flex;
+  flex-direction: row;
+}
+
+.name {
+  width: 200px;
+}
+
+.search-image {
+  width: 50px;
+  height: 50px;
+  object-fit: cover;
+}
+
+.previewURL {
+  display: none;
+}
