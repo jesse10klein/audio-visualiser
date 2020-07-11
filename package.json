@@ -1,0 +1,25 @@
+{
+  "name": "audio-visualizer",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "dependencies": {
+    "express": "^4.17.1",
+    "pug": "^3.0.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jesse10klein/audio-visualiser.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jesse10klein/audio-visualiser/issues"
+  },
+  "homepage": "https://github.com/jesse10klein/audio-visualiser#readme"
+}

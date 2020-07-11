@@ -1,0 +1,12 @@
+doctype html
+head
+  meta(charset='UTF-8')
+  title Audio Visualiser
+  link(rel='stylesheet' href='/style/style.css')
+  link(rel="shortcut icon" href="")
+button(onclick='startPlaying()') Play
+#content
+  input#thefile(type='file' accept='audio/*')
+  canvas#canvas
+  audio#audio(controls='')
+script(src='/js/script.js')
