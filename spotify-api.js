@@ -47,12 +47,8 @@ request.post(authOptions, async function(error, response, body) {
   }
 });
 
-console.log('linked');
-
 //Function to get top 10 best matches to a search term from user
 router.post('/', asyncHandler(async (req, res) => {
-
-  console.log("HERE");
 
   const { searchTerm } = req.body;
   const type = "track";
@@ -87,11 +83,8 @@ router.post('/', asyncHandler(async (req, res) => {
       dataToSend.push(data);
     }
     res.send(dataToSend);
-    console.log(dataToSend);
   });
 
 }));
-
-
 
 module.exports = router;

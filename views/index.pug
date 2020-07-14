@@ -4,19 +4,30 @@ head
   title Audio Visualiser
   link(rel='stylesheet' href='/style/style.css')
   link(rel='stylesheet' href='/style/searchTerm.css')
+  link(rel='stylesheet' href='/style/sliders.css')
   link(rel="shortcut icon" href="")
+  link(href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet")
 
 #header
-  input(type='file' id='file' accept='audio/*')
-  h3#searchTitle= "Search songs: "
-  input#search-term(type='text' name='searchTerm' autocomplete="off")
-  #search-dropdown
-  button(onclick='startPlaying()')= 'Play'
+  #songSearch
+    h3#searchTitle= "Search songs: "
+    input#search-term(type='text' name='searchTerm' autocomplete="off")
 
-  p.label= 'Bar Length'
-  input#barLengthSlider(type="range" min="10" max="45" value="35")
-  p.label= 'Radius'
-  input#circleRadiusSlider(type="range" min="10" max="60" value="45")
+  h1#title= 'Audio Visualizer'
+
+  #search-dropdown
+
+  input#file(type='file' accept='audio/*')
+
+  h2#dropdown= 'Controls'
+    #dropdownContent
+      p.label= 'Bar Length:'
+      input#barLengthSlider(type="range" min="10" max="60" value="30")
+      p.label= 'Radius:'
+      input#circleRadiusSlider(type="range" min="10" max="60" value="45")
+      p.label= 'Rotation Speed:'
+      input#rotationSlider(type="range" min="0" max="20" value="10")
+      button#changeRotation(onclick='invertAngleIncrement()')= 'Change Rotation Direction'
 
 
 

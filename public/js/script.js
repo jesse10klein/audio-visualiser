@@ -1,8 +1,18 @@
 let playing = false;
 let audio = null;
 let timeoutSet = false;
+let angleTimeout = false;
 const barLengthSlider = document.getElementById('barLengthSlider');
 const circleRadiusSlider = document.getElementById('circleRadiusSlider');
+const rotationSlider = document.getElementById('rotationSlider');
+let angleIncrement = 0.001;
+
+function invertAngleIncrement() {
+  angleIncrement = angleIncrement > 0? -0.001: 0.001;
+}
+
+
+let angle = 0;
 
 window.onload = function() {
   audio = document.getElementById('audio');
@@ -10,6 +20,7 @@ window.onload = function() {
   audio.volume = 0.1;
   const canvas = document.getElementById('canvas');
   const file = document.getElementById('file');
+  
   file.onchange = function() {
     if (!playing) {
       startPlaying(URL.createObjectURL(this.files[0]));
@@ -20,6 +31,13 @@ window.onload = function() {
       audio.play();
     }
   }
+
+  audio.onended = function() {
+    const title = $("#title");
+    title.text(`Audio Visualizer`);
+    title.css('font-size', 22);
+  };
+
 };
 
 function startPlaying(source) {
@@ -65,7 +83,17 @@ function startPlaying(source) {
   function renderFrame() {
     requestAnimationFrame(renderFrame);
 
-    
+    if (!angleTimeout) {
+      angleTimeout = true;
+      setTimeout(function () {
+        angle += angleIncrement * rotationSlider.value;
+        angleTimeout = false;
+      }, 20);
+    }
+    if (angle > 6.28) {
+      angle = 0;
+    }
+
     const innerRadius = circleRadiusSlider.value * 2;
 
     x = 0;
@@ -88,7 +116,7 @@ function startPlaying(source) {
       var r = barHeight + ((1.2 * i/bufferLength));
       var g = ((200 * i/bufferLength));
       colour = "rgb(" + r + "," + g + "," + b + ")";
-      drawRotatedRectangle(ctx, (i * angleMultiplier), barHeight, colour, innerRadius);
+      drawRotatedRectangle(ctx, (i * angleMultiplier) + angle, barHeight, colour, innerRadius);
 
 
       x += barWidth + 1;
@@ -135,9 +163,12 @@ function formatAutocompleteTag(tag) {
 
 function processPreview(elem) {
   const url = (elem.previousElementSibling.previousElementSibling.innerText);
+  const songTitle = (elem.previousElementSibling.previousElementSibling.previousElementSibling.innerText); 
   //Hide all boxed;
   const dropdown = $("#search-dropdown");
   dropdown.empty();
+  const searchTerm = $("#search-term");
+  searchTerm.val("");
   if (!playing) {
     startPlaying(url);
     playing = true;
@@ -146,6 +177,9 @@ function processPreview(elem) {
     audio.load();
     audio.play();
   }
+  const title = $("#title");
+  title.text(`Now Playing: ${songTitle}`);
+  title.css('font-size', 15);
 }
 
 function updateAutoComplete(matches) {
@@ -194,5 +228,14 @@ $("#search-term").on('keyup', function () {
 
 });
 
+const dropdown = document.getElementById('dropdown');
+const dropdownContent = document.getElementById('dropdownContent');
+dropdown.onmouseover = () => {
+  dropdownContent.style.display = 'block';
+}
+
+dropdown.onmouseleave = () => {
+  dropdownContent.style.display = 'none';
+}
 
 

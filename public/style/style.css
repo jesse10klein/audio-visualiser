@@ -4,18 +4,20 @@ body {
   background-color: black;
   height: 100%;
   width: 100%;
+  font-family: 'Press Start 2P', cursive;
 }
 
 #header {
-  height: 10vh;
+  height: 50px;
   width: 100%;
   background-color: white;
   display: flex;
   flex-direction: row;
+  justify-content: space-around;
 }
 
 #canvas {
-  height: 89vh;
+  height: 90vh;
   width: 100%;
 }
 
@@ -24,7 +26,117 @@ body {
 }
 
 #search-dropdown {
-  margin-top: 80px;
+  margin-top: 50px;
+  left: 250px;
   position: fixed;
   background-color: white;
+}
+
+.label {
+  font-family: 'Press Start 2P', cursive;
+  font-size: 10px;
+  margin-left: 5px;
+  margin-bottom: 0;
+}
+
+#changeRotation {
+  margin: 0;
+  padding: 0;
+  border: 1px solid black;
+  background-color: white;
+  font-family: 'Press Start 2P', cursive;
+  font-size: 10px;
+  width: 140px;
+  height: 40px;
+  margin-top: 5px;
+  margin-bottom: 5px;
+  border-radius: 10px;
+  text-align: center;
+  margin-left: 5px;
+}
+
+input[type='range'] {
+  margin-bottom: 5px;
+}
+
+#dropdown {
+  font-size: 20px;
+  margin-left: 5px;
+}
+
+#dropdown:hover {
+  cursor: pointer;
+}
+
+#dropdownContent {
+  text-align: center;
+  width: 150px;
+  margin-left: -10px;
+  display: none;
+  position: absolute;
+  background-color: white;
+  min-width: 160px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 100;
+}
+
+#songSearch {
+  display: flex;
+  flex-direction: row;
+}
+
+#search-term {
+  margin-top: 12.5px;
+  height: 25px;
+  font-size: 10px;
+  width: 180px;
+  font-family: 'Press Start 2P', cursive;
+  border: 1px solid #999;
+  border-radius: 3px;
+}
+
+#title {
+  font-size: 22px;
+  margin: 0;
+  margin-top: 14px;
+  width: 500px;
+  text-align: center;
+}
+
+#file {
+  margin-top: 12.5px;
+  height: 30px;
+  width: 180px;
+}
+
+#file::-webkit-file-upload-button {
+  visibility: hidden;
+}
+
+input[type='file'] {
+  color: transparent;
+}
+
+#file::before {
+  width: 100%;
+  content: 'Select some files';
+  display: inline-block;
+  border: 1px solid #999;
+  border-radius: 3px;
+  padding: 5px 8px;
+  outline: none;
+  white-space: nowrap;
+  -webkit-user-select: none;
+  cursor: pointer;
+  text-shadow: 1px 1px #fff;
+  font-weight: 700;
+  font-size: 10pt;
+}
+
+#file:hover::before {
+  border-color: black;
+}
+
+#file:active::before {
+  background: -webkit-linear-gradient(top, #e3e3e3, #f9f9f9);
 }
