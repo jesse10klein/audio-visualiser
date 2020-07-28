@@ -17,7 +17,8 @@ head
 
   #search-dropdown
 
-  input#file(type='file' accept='audio/*')
+  label#fileLabel(for='file')= 'Choose a file'
+  input#file(type='file' accept='audio/*' title=" ")
 
   h2#dropdown= 'Controls'
     #dropdownContent

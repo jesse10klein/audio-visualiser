@@ -1,11 +1,12 @@
 let playing = false;
 let audio = null;
-let timeoutSet = false;
 let angleTimeout = false;
 const barLengthSlider = document.getElementById('barLengthSlider');
 const circleRadiusSlider = document.getElementById('circleRadiusSlider');
 const rotationSlider = document.getElementById('rotationSlider');
 let angleIncrement = 0.001;
+
+//Need to make width and height global cause they could change when window is resized
 
 function invertAngleIncrement() {
   angleIncrement = angleIncrement > 0? -0.001: 0.001;
@@ -22,14 +23,17 @@ window.onload = function() {
   const file = document.getElementById('file');
   
   file.onchange = function() {
+    const title = $("#title");
+    title.text(`Playing a song from your library`);
+    title.css('font-size', 15);
     if (!playing) {
       startPlaying(URL.createObjectURL(this.files[0]));
-      playing = true;
     } else {
       audio.src = URL.createObjectURL(this.files[0]);
       audio.load();
       audio.play();
     }
+    playing = true;
   }
 
   audio.onended = function() {
@@ -195,15 +199,6 @@ function updateAutoComplete(matches) {
   dropdown.append(HTMLString);
   dropdown.css("display", "flex");
   dropdown.css("flex-direction", "column");
-
-  if (!timeoutSet) {
-    timeoutSet = true;
-    setTimeout(function () {
-      const dd = $("#search-dropdown");
-      dd.css("display", "none");
-      timeoutSet = false;
-    }, 10000);
-  }
 }
 
 $("#search-term").on('keyup', function () {
@@ -236,6 +231,12 @@ dropdown.onmouseover = () => {
 
 dropdown.onmouseleave = () => {
   dropdownContent.style.display = 'none';
+}
+
+const searchDropdown = document.getElementById('search-dropdown');
+
+searchDropdown.onmouseleave = () => {
+  searchDropdown.style.display = 'none';
 }
 
 
