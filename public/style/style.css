@@ -31,7 +31,7 @@ body {
 
 #search-dropdown {
   margin-top: 50px;
-  left: 250px;
+  left: 35vw;
   position: fixed;
   background-color: white;
 }
@@ -107,7 +107,7 @@ input[type='range'] {
   font-size: 22px;
   margin-top: 14px;
   text-align: center;
-  max-width: 300px;
+  max-width: 400px;
 }
 
 #file {
@@ -129,6 +129,7 @@ h2 {
 @media only screen and (max-width: 1275px) {
 
   #title {
+    max-width: 250px;
     font-size: 15px;
     margin-top: 20px;
   }
@@ -138,9 +139,24 @@ h2 {
   }
 }
 
-@media only screen and (max-width: 940px) {
+@media only screen and (max-width: 760px) {
+
+  #title {
+    max-width: 400px;
+    padding-right: 20px;
+  }
 
   #songSearch {
-    display: none;
+    position: fixed;
+    top: 50px;
+    width: 100vw;
+    display: flex;
+    justify-content: center;
+    background-color: white;
+  }
+
+  #search-dropdown {
+    margin-top: 90px;
+    left: 55px;
   }
 }

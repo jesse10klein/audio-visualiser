@@ -5,23 +5,29 @@ const barLengthSlider = document.getElementById('barLengthSlider');
 const circleRadiusSlider = document.getElementById('circleRadiusSlider');
 const rotationSlider = document.getElementById('rotationSlider');
 let angleIncrement = 0.001;
+let canvas = null;
+let canvasCentre = null;
+let ctx = null;
 
 //Need to make width and height global cause they could change when window is resized
 
-
-function printStuff() {
-  if (audio) {
-    console.log(`${audio.currentTime} of ${audio.duration}`);
-  }
-  setTimeout(() => {
-    printStuff();
-  }, 500);
-}
-
-printStuff();
-
 function invertAngleIncrement() {
   angleIncrement = angleIncrement > 0? -0.001: 0.001;
+}
+
+function paint() {
+  //Welcome message on canvas
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  ctx.fillStyle = "white";
+  if (window.innerWidth > 700) {
+    ctx.font = "50px Arial";
+    ctx.fillText("github.com/jesse10klein", canvas.width/2 - 265, canvas.height/2 - 75);
+    ctx.fillText("Email: jesse10klein@gmail.com", canvas.width/2 - 350, canvas.height/2 + 50);
+  } else {
+  ctx.font = "25px Arial";
+  ctx.fillText("github.com/jesse10klein", canvas.width/2 - 140, canvas.height/2);
+  ctx.fillText("Email: jesse10klein@gmail.com", canvas.width/2 - 180, canvas.height/2 + 50);
+  }
 }
 
 
@@ -31,9 +37,17 @@ window.onload = function() {
   audio = document.getElementById('audio');
   audio.crossOrigin = 'anonymous';
   audio.volume = 0.1;
-  const canvas = document.getElementById('canvas');
+  canvas = document.getElementById('canvas');
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight - 70;
+  canvasCentre = {x: canvas.width/2, y: canvas.height/2};
   const file = document.getElementById('file');
   
+  ctx = canvas.getContext("2d");
+  
+  paint();
+
+
   file.onchange = function() {
     updateTitle(`Playing a song from your library`)
     if (!playing) {
@@ -45,29 +59,25 @@ window.onload = function() {
     }
     playing = true;
   }
-
-  audio.onended = function() {
-    const title = $("#title");
-    title.text(`Audio Visualizer`);
-    title.css('font-size', 22);
-    playing = false;
-  };
-
 };
 
+
+
+window.onresize = function () {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight - 70;
+  canvasCentre = {x: canvas.width/2, y: canvas.height/2};
+  paint();
+}
+
 function startPlaying(source) {
+  playing = true;
   audio.src = source;
   audio.load();
   audio.play();
   var context = new AudioContext();
   var src = context.createMediaElementSource(audio);
   var analyser = context.createAnalyser();
-
-  var canvas = document.getElementById("canvas");
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight - 70;
-  canvasCentre = {x: canvas.width/2, y: canvas.height/2};
-  var ctx = canvas.getContext("2d");
 
   src.connect(analyser);
   analyser.connect(context.destination);
@@ -96,8 +106,9 @@ function startPlaying(source) {
   maxCircles = 20;
 
   function renderFrame() {
-    requestAnimationFrame(renderFrame);
-
+    if (playing) {
+      requestAnimationFrame(renderFrame);
+    }
     if (!angleTimeout) {
       angleTimeout = true;
       setTimeout(function () {
@@ -199,7 +210,7 @@ function updateTitle(newText) {
   const title= $("#title");
   title.text(newText);
   title.css('font-size', 10);
-  title.css('margin-top', 22);
+  title.css('margin-top', 17);
 }
 
 function updateAutoComplete(matches) {
