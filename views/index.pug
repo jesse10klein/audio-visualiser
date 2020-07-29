@@ -9,11 +9,12 @@ head
   link(href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet")
 
 #header
-  #songSearch
-    h3#searchTitle= "Search songs: "
-    input#search-term(type='text' name='searchTerm' autocomplete="off")
 
   h1#title= 'Audio Visualizer'
+  #songSearch
+    h2#searchTitle= "Search Spotify: "
+    input#search-term(type='text' name='searchTerm' autocomplete="off")
+
 
   #search-dropdown
 
@@ -28,12 +29,12 @@ head
       input#circleRadiusSlider(type="range" min="10" max="60" value="45")
       p.label= 'Rotation Speed:'
       input#rotationSlider(type="range" min="0" max="20" value="10")
-      button#changeRotation(onclick='invertAngleIncrement()')= 'Change Rotation Direction'
+      button#changeRotation(onclick='invertAngleIncrement()')= 'Toggle Rotation'
 
 
 
 canvas#canvas
-audio#audio(controls='')
+audio#audio(controls controlsList="nodownload")
 
 script(src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js")
 script(src='/js/script.js')

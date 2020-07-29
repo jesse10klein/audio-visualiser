@@ -8,6 +8,18 @@ let angleIncrement = 0.001;
 
 //Need to make width and height global cause they could change when window is resized
 
+
+function printStuff() {
+  if (audio) {
+    console.log(`${audio.currentTime} of ${audio.duration}`);
+  }
+  setTimeout(() => {
+    printStuff();
+  }, 500);
+}
+
+printStuff();
+
 function invertAngleIncrement() {
   angleIncrement = angleIncrement > 0? -0.001: 0.001;
 }
@@ -23,9 +35,7 @@ window.onload = function() {
   const file = document.getElementById('file');
   
   file.onchange = function() {
-    const title = $("#title");
-    title.text(`Playing a song from your library`);
-    title.css('font-size', 15);
+    updateTitle(`Playing a song from your library`)
     if (!playing) {
       startPlaying(URL.createObjectURL(this.files[0]));
     } else {
@@ -40,6 +50,7 @@ window.onload = function() {
     const title = $("#title");
     title.text(`Audio Visualizer`);
     title.css('font-size', 22);
+    playing = false;
   };
 
 };
@@ -181,9 +192,14 @@ function processPreview(elem) {
     audio.load();
     audio.play();
   }
-  const title = $("#title");
-  title.text(`Now Playing: ${songTitle}`);
-  title.css('font-size', 15);
+  updateTitle(`Now Playing: ${songTitle}`);
+}
+
+function updateTitle(newText) {
+  const title= $("#title");
+  title.text(newText);
+  title.css('font-size', 10);
+  title.css('margin-top', 22);
 }
 
 function updateAutoComplete(matches) {
