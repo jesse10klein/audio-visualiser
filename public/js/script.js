@@ -4,10 +4,17 @@ let angleTimeout = false;
 const barLengthSlider = document.getElementById('barLengthSlider');
 const circleRadiusSlider = document.getElementById('circleRadiusSlider');
 const rotationSlider = document.getElementById('rotationSlider');
+const spreadSlider = document.getElementById('spreadSlider');
+const sampleSlider = document.getElementById('sampleSlider');
+const spreadSliderValues = [10, 15, 23, 71, 200];
+const sampleSizeValues = [256, 512, 1024, 2048, 4096];
+let bufferLength = 1;
 let angleIncrement = 0.001;
 let canvas = null;
 let canvasCentre = null;
 let ctx = null;
+let angleMultiplier = 1;
+let analyser = null;
 
 //Need to make width and height global cause they could change when window is resized
 
@@ -15,9 +22,17 @@ function invertAngleIncrement() {
   angleIncrement = angleIncrement > 0? -0.001: 0.001;
 }
 
+sampleSlider.onchange = () => {
+  analyser.fftSize = sampleSizeValues[sampleSlider.value];
+}
+
+spreadSlider.onchange = () => {
+  angleMultiplier = (spreadSliderValues[spreadSlider.value] * Math.PI) / (bufferLength);
+}
+
 function paint() {
   //Welcome message on canvas
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  ctx.clearRect(0, 0, 2000, 2000);
   ctx.fillStyle = "white";
   if (window.innerWidth > 700) {
     ctx.font = "50px Arial";
@@ -61,8 +76,6 @@ window.onload = function() {
   }
 };
 
-
-
 window.onresize = function () {
   canvas.width = window.innerWidth;
   canvas.height = window.innerHeight - 70;
@@ -77,21 +90,21 @@ function startPlaying(source) {
   audio.play();
   var context = new AudioContext();
   var src = context.createMediaElementSource(audio);
-  var analyser = context.createAnalyser();
+  analyser = context.createAnalyser();
 
   src.connect(analyser);
   analyser.connect(context.destination);
 
-  analyser.fftSize = 2048;
+  analyser.fftSize = 512;
 
-  var bufferLength = analyser.frequencyBinCount;
+  bufferLength = analyser.frequencyBinCount;
 
   var dataArray = new Uint8Array(bufferLength);
 
   var WIDTH = canvas.width;
   var HEIGHT = canvas.height;
 
-  const angleMultiplier = (21 * Math.PI) / (bufferLength);
+  angleMultiplier = (21 * Math.PI) / (bufferLength)
 
   var barWidth = (WIDTH / bufferLength) * 1.5;
   var barHeight;
@@ -236,7 +249,7 @@ $("#search-term").on('keyup', function () {
 
   const url = window.location.href + "spotify-api";
 
-  if (searchTerm.length < 4) {
+  if (searchTerm.length < 3) {
     updateAutoComplete([]);
     return;
   } 
