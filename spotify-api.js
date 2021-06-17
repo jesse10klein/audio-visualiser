@@ -1,10 +1,6 @@
 
-const prompt = require('prompt-sync')();
-const request = require('request-promise');
-const { Router } = require('express');
+const {client_id, client_secret} = require('./keys');
 
-const client_id = 'ef9a4d764c5448c0ac37f6be0a35d722'; 
-const client_secret = '7c5ebdca944d4092be79580ea0a9b2b5';
 let access_token = null;
 const requestURL = "https://api.spotify.com/v1/search"
 
